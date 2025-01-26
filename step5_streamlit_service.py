@@ -1,6 +1,7 @@
 import streamlit as st
 from openai import OpenAI
-from step4_retrieval import retrieve_similar
+
+from steps.step4_retrieval import retrieve_similar
 
 client = OpenAI(
     api_key=st.secrets["OPENAI_API_KEY"],
