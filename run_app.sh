@@ -1,0 +1,1 @@
+streamlit run steps/step5_streamlit_service.py
