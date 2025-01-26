@@ -1,4 +1,6 @@
 import json
+import os
+import time
 from typing import Dict, List
 
 import requests
@@ -17,8 +19,13 @@ def parse_courses() -> List[str]:
 def extract_pages(hrefs: List[str]) -> Dict[str, str]:
     data_dict = {}
     for href in hrefs:
-        text = BeautifulSoup(requests.get(href).text).text
-        data_dict[href] = text
+        time.sleep(5)
+        response = requests.get(href)
+        if response.status_code == 200:
+            text = BeautifulSoup(response.text, "html.parser").text
+            data_dict[href] = text
+        else:
+            raise Exception(f"Failed to fetch {href}, response: {response.status_code}")
 
     with open("data/full_texts.json", "w", encoding="utf-8") as f:
         json.dump(data_dict, f, ensure_ascii=False, indent=2)
@@ -27,5 +34,8 @@ def extract_pages(hrefs: List[str]) -> Dict[str, str]:
 
 
 if __name__ == "__main__":
-    courses = parse_courses()
-    extract_pages(courses)
+    if not os.path.exists("data/full_texts.json"):
+        courses = parse_courses()
+        extract_pages(courses)
+    else:
+        print("Data already exists")

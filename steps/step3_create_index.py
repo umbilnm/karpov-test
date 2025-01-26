@@ -6,8 +6,9 @@ import faiss
 import numpy as np
 from dotenv import load_dotenv
 from openai import OpenAI
-from step1_get_pages import extract_pages, parse_courses
-from step2_summarize import summarize_pages
+
+from .step1_get_pages import extract_pages, parse_courses
+from .step2_summarize import summarize_pages
 
 load_dotenv()
 API_KEY = os.getenv("OPENAI_API_KEY")

@@ -4,7 +4,8 @@ from typing import List
 
 import faiss
 import numpy as np
-from step3_create_index import embed_text
+
+from .step3_create_index import embed_text
 
 
 @dataclass
