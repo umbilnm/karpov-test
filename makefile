@@ -6,3 +6,6 @@ setup:
 
 tests:
 	.venv/bin/pytest tests
+
+run:
+	streamlit run steps/step5_streamlit_service.py
