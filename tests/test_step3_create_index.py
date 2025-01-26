@@ -15,12 +15,14 @@ def sample_summaries():
 def test_create_index(sample_summaries):
     with patch(
         "steps.step3_create_index.embed_text", return_value=np.array([0.1, 0.2])
-    ):
+    ) as mock_embed_text:
         index, urls, embeddings = create_index(sample_summaries)
         assert isinstance(index, faiss.Index)
         assert isinstance(urls, list)
         assert isinstance(embeddings, np.ndarray)
         assert len(urls) == len(sample_summaries)
+        mock_embed_text.assert_any_call("summary1")
+        mock_embed_text.assert_any_call("summary2")
 
 
 def test_save_index(sample_summaries):
@@ -29,5 +31,4 @@ def test_save_index(sample_summaries):
     embeddings = np.array([[0.1, 0.2], [0.3, 0.4]])
 
     with patch("faiss.write_index"), patch("builtins.open", mock_open()):
-        save_index(mock_index, urls, embeddings, sample_summaries)
         save_index(mock_index, urls, embeddings, sample_summaries)

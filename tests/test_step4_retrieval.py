@@ -1,10 +1,11 @@
-from unittest.mock import patch
+import json
+from unittest.mock import mock_open, patch
 
 import faiss
 import numpy as np
 import pytest
 
-from steps.step4_retrieval import Document, retrieve_similar
+from steps.step4_retrieval import Document, load_index, retrieve_similar
 
 
 @pytest.fixture
@@ -27,3 +28,32 @@ def test_retrieve_similar(mock_index_and_documents):
         assert isinstance(results, list)
         assert len(results) == 2
         assert all(isinstance(r, tuple) for r in results)
+
+
+def test_load_index():
+    # Mock data for documents.json
+    mock_documents_data = json.dumps(
+        [
+            {
+                "url": "http://example.com",
+                "summary": "Example summary",
+                "embedding": [0.1, 0.2, 0.3],
+            }
+        ]
+    )
+
+    mock_index = faiss.IndexFlatL2(3)
+
+    with (
+        patch("builtins.open", mock_open(read_data=mock_documents_data)),
+        patch("faiss.read_index", return_value=mock_index),
+    ):
+
+        index, documents = load_index()
+
+        assert index == mock_index
+
+        assert len(documents) == 1
+        assert documents[0].url == "http://example.com"
+        assert documents[0].summary == "Example summary"
+        assert documents[0].embedding == [0.1, 0.2, 0.3]
