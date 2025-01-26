@@ -21,15 +21,9 @@ def get_course_recommendation(user_query: str):
         )
         with open("prompts/user_prompt_template.txt", "r") as f:
             prompt = f.read()
-        with open("prompts/system_prompt.txt", "r") as f:
-            system_prompt = f.read()
         response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
-                {
-                    "role": "system",
-                    "content": system_prompt,
-                },
                 {
                     "role": "user",
                     "content": prompt.format(user_query=user_query, context=context),
